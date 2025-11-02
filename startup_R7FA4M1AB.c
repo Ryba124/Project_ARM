@@ -1,9 +1,9 @@
 /******************************************************************************
- * @file     startup_<Device>.c
+ * @file     startup_R7FA4M1AB.c
  * @brief    CMSIS-Core(M) Device Startup File for
- *           Device <Device>
+ *           Device R7FA4M1AB
  * @version  V1.0.0
- * @date     20. January 2021
+ * @date     02. November 2025
  ******************************************************************************/
 /*
  * Copyright (c) 2009-2021 Arm Limited. All rights reserved.
@@ -22,9 +22,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/* ToDo: rename this file from 'startup_Device.c' to 'startup_<Device>.c according to your device naming */
-
 
 #include "R7FA4M1AB.h"
 
@@ -45,7 +42,6 @@ extern __NO_RETURN void __PROGRAM_START(void);
 __NO_RETURN void Reset_Handler  (void);
 __NO_RETURN void Default_Handler(void);
 
-/* ToDo: Add Cortex exception handler according the used Cortex-Core */
 /*---------------------------------------------------------------------------
   Exception / Interrupt Handler
  *---------------------------------------------------------------------------*/
@@ -61,12 +57,6 @@ void DebugMon_Handler       (void) __attribute__ ((weak, alias("Default_Handler"
 void PendSV_Handler         (void) __attribute__ ((weak, alias("Default_Handler")));
 void SysTick_Handler        (void) __attribute__ ((weak, alias("Default_Handler")));
 
-/* ToDo: Add your device specific interrupt handler */
-// void <DeviceInterrupt first>_Handler     (void) __attribute__ ((weak, alias("Default_Handler")));
-// ...
-// void <DeviceInterrupt last>_Handler      (void) __attribute__ ((weak, alias("Default_Handler")));
-
-
 /*----------------------------------------------------------------------------
   Exception / Interrupt Vector table
  *----------------------------------------------------------------------------*/
@@ -76,31 +66,24 @@ void SysTick_Handler        (void) __attribute__ ((weak, alias("Default_Handler"
 #pragma GCC diagnostic ignored "-Wpedantic"
 #endif
 
-/* ToDo: Add Cortex exception vectors according the used Cortex-Core */
 extern const VECTOR_TABLE_Type __VECTOR_TABLE[20];
        const VECTOR_TABLE_Type __VECTOR_TABLE[20] __attribute__((used, section(".vectors"))) = {
   (VECTOR_TABLE_Type)(&__INITIAL_SP),  /*     Initial Stack Pointer */
-  Reset_Handler,                       /*     Reset Handler */
-  NMI_Handler,                         /* -14 NMI Handler */
-  HardFault_Handler,                   /* -13 Hard Fault Handler */
-  MemManage_Handler,                   /* -12 MPU Fault Handler */
-  BusFault_Handler,                    /* -11 Bus Fault Handler */
-  UsageFault_Handler,                  /* -10 Usage Fault Handler */
+  &Reset_Handler,                       /*     Reset Handler */
+  &NMI_Handler,                         /* -14 NMI Handler */
+  &HardFault_Handler,                   /* -13 Hard Fault Handler */
+  &MemManage_Handler,                   /* -12 MPU Fault Handler */
+  &BusFault_Handler,                    /* -11 Bus Fault Handler */
+  &UsageFault_Handler,                  /* -10 Usage Fault Handler */
   SecureFault_Handler,                 /*  -9 Secure Fault Handler */
   0,                                   /*     Reserved */
   0,                                   /*     Reserved */
   0,                                   /*     Reserved */
-  SVC_Handler,                         /*  -5 SVCall Handler */
-  DebugMon_Handler,                    /*  -4 Debug Monitor Handler */
+  &SVC_Handler,                         /*  -5 SVCall Handler */
+  &DebugMon_Handler,                    /*  -4 Debug Monitor Handler */
   0,                                   /*     Reserved */
-  PendSV_Handler,                      /*  -2 PendSV Handler */
-  SysTick_Handler                     /*  -1 SysTick Handler */
-
-/* ToDo: Add your device specific interrupt vectors */
-  /* Interrupts */
-  //<DeviceInterrupt first>_Handler,     /* first Device Interrupt */
-  //...
-  //<DeviceInterrupt last>_Handler       /* last Device Interrupt */
+  &PendSV_Handler,                      /*  -2 PendSV Handler */
+  &SysTick_Handler                     /*  -1 SysTick Handler */
 };
 
 #if defined ( __GNUC__ )
@@ -114,11 +97,6 @@ __NO_RETURN void Reset_Handler(void)
 {
   __set_PSP((uint32_t)(&__INITIAL_SP));
 
-/* ToDo: Initialize stack limit register for Armv8-M Main Extension based processors*/
-//  __set_MSPLIM((uint32_t)(&__STACK_LIMIT));
-//  __set_PSPLIM((uint32_t)(&__STACK_LIMIT));
-
-/* ToDo: Add stack sealing for Armv8-M based processors */
 #if defined (__ARM_FEATURE_CMSE) && (__ARM_FEATURE_CMSE == 3U)
   __TZ_set_STACKSEAL_S((uint32_t *)(&__STACK_SEAL));
 #endif
